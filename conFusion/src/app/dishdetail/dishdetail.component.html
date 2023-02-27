@@ -1,0 +1,93 @@
+<div class="container"
+  fxLayout="row"
+  fxLayout.sm="column"
+  fxLayout.xs="column"
+  fxLayoutAlign.gt-md="space-around  center"
+  fxLayoutGap="10px"
+  fxLayoutGap.xs="0">
+
+  <div fxFlex="40"  *ngIf="dish" [@visibility]='visibility' [@expand]>
+    <mat-card  >
+      <mat-card-header>
+        <mat-card-title >
+          {{dish.name | uppercase}}
+        </mat-card-title>
+      </mat-card-header>
+      <img mat-card-image src="{{BaseURL + dish.image}}" alt={{dish.name}}>
+      <mat-card-content>
+        <p>
+          {{dish.description}}
+        </p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button [routerLink]="['/dishdetail',prev]"><span class="fa fa-chevron-left fa-lg"></span></button>
+        <button mat-button (click)="goBack()">BACK</button>
+        <button mat-button>LIKE</button>
+        <button mat-button>SHARE</button>
+        <span class="flex-spacer"></span>
+        <button mat-button  [routerLink]="['/dishdetail', next]"><span class="fa fa-chevron-right fa-lg"></span></button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  
+  
+  <div fxFlex="40" *ngIf="dish" [@visibility]='visibility' [@expand]>
+    <mat-list role="list"  >
+      <div mat-header>Comments</div>
+      <mat-list-item role="listitem" *ngFor="let commen of dish.comments">
+        <div mat-line>{{commen.comment}}</div>
+        <div mat-line>{{commen.rating}} stars</div>
+        <div mat-line>--{{commen.author}} {{commen.date | date}}</div>
+      </mat-list-item>
+    </mat-list>
+    <mat-list role="list">
+      <mat-list-item role="listitem">
+        <div mat-line *ngIf="author?.length>1">{{author}}</div>
+        <div mat-line *ngIf="rating">{{rating}} star </div>
+        <div mat-line *ngIf="comment">--{{comment}} </div>  
+      </mat-list-item>
+    </mat-list>
+    <div class="form-size">
+      <form novalidate [formGroup]="commentForm" (ngSubmit)="onSubmit()">
+        <p>
+          <mat-form-field >
+            <input matInput [(ngModel)]="author" formControlName="author" placeholder="Name" type="text" required >
+            <mat-error *ngIf="formErrors.author">
+             {{formErrors.author}}
+            </mat-error>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-slider formControlName="rating" 
+          thumbLabel 
+          tickInterval="1"
+          min="1"
+          max="5" value="5" ></mat-slider>
+          
+        </p>
+        <p>
+          <mat-form-field >
+            <textarea matInput [(ngModel)]="comment" formControlName="comment" placeholder="your comment" required></textarea>
+            <mat-error *ngIf="formErrors.comment">
+             {{formErrors.comment}}
+            </mat-error>
+          </mat-form-field>
+        </p>
+        
+        <button mat-button  [disabled]="commentForm.invalid" type="submit">submit</button>
+      </form>
+    </div>
+  </div>
+  <div fxFlex [hidden]="dish || errMess">
+    <mat-spinner></mat-spinner><h4>Loading... Please wait!</h4>
+  </div>
+  
+  <div fxFlex *ngIf="errMess">
+    <h2>Error</h2>
+    <h4>{{errMess}}</h4>
+  </div>
+
+  
+  
+
+</div>
